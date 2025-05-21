@@ -2,10 +2,11 @@ from django.urls import path, include
 from rest_framework import routers
 
 from apps.spotify.views import hello_world, AuthorListApiView, SongDetailApiView, AuthorDetailApiView, \
-    AuthorListAPIView, AuthorViewSet
+    AuthorListAPIView, AuthorViewSet, SongViewSet
 
 router = routers.DefaultRouter()
 router.register('authors-viewset', AuthorViewSet)
+router.register('/song-viewset', SongViewSet)
 
 urlpatterns = [
     path('/hello', hello_world),

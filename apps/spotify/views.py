@@ -1,9 +1,11 @@
 from rest_framework import status, generics, viewsets, permissions
 from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
 
+from apps.spotify.filters import AuthorFilter
 from apps.spotify.models import Author, Song
 from apps.spotify.serializers import AuthorSerializer, SongSerializer, AuthorDetailSerializer
 
@@ -45,10 +47,20 @@ class AuthorDetailApiView(generics.RetrieveAPIView):
 
 class AuthorListAPIView(generics.ListAPIView):
     queryset = Author.objects.all()
-    serializer_class = AuthorDetailSerializer
+    serializer_class = AuthorSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'surname']
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorDetailSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
+    filterset_class = AuthorFilter
+
+
+class SongViewSet(viewsets.ModelViewSet):
+    queryset = Song.objects.all()
+    serializer_class = SongSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name']
